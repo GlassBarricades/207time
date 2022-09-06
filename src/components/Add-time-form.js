@@ -1,7 +1,7 @@
 import "dayjs/locale/ru";
-import { useState } from "react";
+import { useEffect, useState} from "react";
 import { DatePicker, TimeInput } from "@mantine/dates";
-import { createStyles, TextInput, Button, Text, Modal } from "@mantine/core";
+import { createStyles, TextInput, Button, Text, Modal, Group } from "@mantine/core";
 import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
 dayjs.extend(objectSupport);
@@ -14,6 +14,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function AddTimeForm() {
+  const [timeArr, setTimeArr] = useState([])
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [startTime, setStartTime] = useState(null);
@@ -24,8 +25,13 @@ export function AddTimeForm() {
 
   const { classes } = useStyles();
 
-  const timeHandler = (e) => {
-    e.preventDefault();
+  const data = [
+    {name: '96', time: [360, 360, 360]},
+    {name: '33', time: [240, 60, 240]},
+    {name: '2', time: [180, 360, 240]}
+  ]
+
+  function timeHandler() {
 
     const startDay = dayjs(startDate).get('date')
     const startMonth = dayjs(startDate).get('month')
@@ -35,8 +41,6 @@ export function AddTimeForm() {
 
     const startFullDate = dayjs(startDate).set('date', startDay).set('month', startMonth).set('year', startYear).set('hour', startHour).set('minute', startMinute)
 
-    console.log(startFullDate)
-
     const endDay = dayjs(endDate).get('date')
     const endMonth = dayjs(endDate).get('month')
     const endYear = dayjs(endDate).get('year')
@@ -45,25 +49,28 @@ export function AddTimeForm() {
 
     const endFullDate = dayjs(endDate).set('date', endDay).set('month', endMonth).set('year', endYear).set('hour', endHour).set('minute', endMinute)
 
-    console.log(endFullDate)
-
     const result = startFullDate.diff(endFullDate, 'minute')
 
-    let diffRes = undefined;
-
     if (result > 0) {
-      diffRes = result
-      setResultMinutes(diffRes)
+      setResultMinutes(result)
     } else {
-      diffRes = Math.abs(result)
-      setResultMinutes(diffRes)
+      setResultMinutes(Math.abs(result))
     }
-
 
     setOpened(true)
     // console.log(Math.round(diffRes / 60))
     // console.log(diffRes % 60)
   }
+
+  function pushHandler() {
+    const arr = [...timeArr, resultMinutes]
+    setTimeArr(arr)
+    setOpened(false)
+  }
+
+  useEffect(() => {
+    console.log(timeArr);
+  }, [timeArr]);
 
   return (
    <>
@@ -74,6 +81,9 @@ export function AddTimeForm() {
       >
         <Text>{`Позывной: ${name}`}</Text>
         <Text>{`Отработанное время: ${Math.round(resultMinutes / 60)} ч., ${resultMinutes % 60} м.`}</Text>
+        <Group position="center">
+          <Button mt="md" onClick={() => pushHandler()}>Добавить часы</Button>
+        </Group>
       </Modal>
      <form className={classes.form}>
       <TextInput label="Введите позывной" value={name} onChange={(e) => setName(e.target.value)} />

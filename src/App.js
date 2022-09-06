@@ -2,6 +2,7 @@ import { HeaderSimple } from "./components/Header";
 import { AddTime } from "./components/pages/Add-time";
 import { Statistics } from "./components/pages/Statistics";
 import { Admin } from "./components/pages/Admin";
+import Drivers from "./components/pages/Drivers";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container } from "@mantine/core";
@@ -11,6 +12,10 @@ function App() {
     {
       link: "/",
       label: "Добавить часы",
+    },
+    {
+      link: "/drivers",
+      label: "Водители",
     },
     {
       link: "/statistics",
@@ -31,6 +36,7 @@ function App() {
             <Route path="/" element={<AddTime />} />
             <Route path="/statistics" element={<Statistics />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/drivers" element ={<Drivers />} />
           </Routes>
         </Container>
       </div>
